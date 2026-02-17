@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Globe, Play, Square, Download, Link2, ExternalLink, Server, ChevronDown } from "lucide-react";
+import { Globe, Play, Square, Download, Link2, ExternalLink, Server, ChevronDown, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -181,10 +181,39 @@ const CrawlerPage = () => {
             ))}
           </div>
 
-          {/* Link Tables */}
+          {/* Crawled Pages with Attack Surface */}
+          {result.crawled_pages && result.crawled_pages.length > 0 && (
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
+              <div className="px-5 py-3 border-b border-border bg-muted/30 flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-neon-orange" />
+                <h3 className="font-mono text-sm text-foreground">Crawled Pages & Attack Surface</h3>
+              </div>
+              <div className="divide-y divide-border/50 max-h-96 overflow-y-auto">
+                {result.crawled_pages.map((page, i) => (
+                  <div key={i} className="p-4 hover:bg-muted/20 transition-colors space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-xs text-primary truncate max-w-[70%]">{page.url}</span>
+                      <span className="text-xs font-mono text-muted-foreground">HTTP {page.status} · {page.links_found} links</span>
+                    </div>
+                    {page.attack_surface.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {page.attack_surface.map((attack, j) => (
+                          <span key={j} className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-neon-orange/10 text-neon-orange border border-neon-orange/20">
+                            {attack}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Internal Links */}
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="px-5 py-3 border-b border-border bg-muted/30">
-              <h3 className="font-mono text-sm text-foreground">Internal Links</h3>
+              <h3 className="font-mono text-sm text-foreground">Internal Links ({result.internal_links.length})</h3>
             </div>
             <div className="max-h-60 overflow-y-auto">
               {result.internal_links.map((link, i) => (
