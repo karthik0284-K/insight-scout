@@ -95,7 +95,6 @@ export const generateCrawlPDF = (result: CrawlResult) => {
     doc.addPage();
     doc.setFontSize(16);
     doc.text("Subdomains", 14, 20);
-
     autoTable(doc, {
       startY: 30,
       head: [["#", "Subdomain"]],
@@ -103,6 +102,26 @@ export const generateCrawlPDF = (result: CrawlResult) => {
       theme: "grid",
       headStyles: { fillColor: [100, 60, 180] },
       styles: { fontSize: 9 },
+    });
+  }
+
+  // Attack Surface Analysis
+  if (result.crawled_pages && result.crawled_pages.length > 0) {
+    doc.addPage();
+    doc.setFontSize(16);
+    doc.setTextColor(40);
+    doc.text("Attack Surface Analysis", 14, 20);
+    autoTable(doc, {
+      startY: 30,
+      head: [["URL", "Status", "Links", "Attack Vectors"]],
+      body: result.crawled_pages.map((p) => [
+        p.url.substring(0, 60), String(p.status), String(p.links_found),
+        p.attack_surface.join("; ") || "None detected",
+      ]),
+      theme: "grid",
+      headStyles: { fillColor: [200, 100, 0] },
+      styles: { fontSize: 7, cellPadding: 2 },
+      columnStyles: { 0: { cellWidth: 55 }, 3: { cellWidth: 70 } },
     });
   }
 
