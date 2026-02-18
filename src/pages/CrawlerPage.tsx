@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
-import { Globe, Play, Square, Download, Link2, ExternalLink, Server, ChevronDown, ShieldAlert } from "lucide-react";
+import { Globe, Play, Square, Download, Link2, ExternalLink, Server, ChevronDown, ShieldAlert, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -55,10 +56,18 @@ const CrawlerPage = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
+      {/* Breadcrumb */}
+      <Link to="/" className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-primary transition-colors">
+        <ArrowLeft className="w-3 h-3" /> Back to Home
+      </Link>
+
       {/* Header */}
-      <div className="space-y-2">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="space-y-2">
         <div className="flex items-center gap-3">
-          <Globe className="w-8 h-8 text-primary" />
+          <div className="relative">
+            <Globe className="w-8 h-8 text-primary" />
+            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full" />
+          </div>
           <h1 className="text-3xl font-bold text-foreground">
             AI Web <span className="text-primary text-glow-green">Crawler</span>
           </h1>
@@ -66,13 +75,14 @@ const CrawlerPage = () => {
         <p className="text-muted-foreground font-mono text-sm">
           BFS-based intelligent web reconnaissance with depth control and rate limiting
         </p>
-      </div>
+      </motion.div>
 
       {/* Config Panel */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-border bg-card p-6 space-y-5"
+        transition={{ delay: 0.1 }}
+        className="rounded-xl border border-border bg-card/60 backdrop-blur-sm p-6 space-y-5 hover:border-primary/20 transition-colors duration-300"
       >
         <div className="space-y-2">
           <label className="text-sm font-mono text-muted-foreground">Target URL</label>
@@ -80,7 +90,7 @@ const CrawlerPage = () => {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="https://example.com"
-            className="font-mono bg-muted/50 border-border focus:border-primary"
+            className="font-mono bg-muted/50 border-border focus:border-primary h-11"
             disabled={isRunning}
           />
         </div>
@@ -93,13 +103,13 @@ const CrawlerPage = () => {
                 value={depth}
                 onChange={(e) => setDepth(Number(e.target.value))}
                 disabled={isRunning}
-                className="w-full h-10 rounded-md border border-border bg-muted/50 px-3 font-mono text-sm text-foreground appearance-none cursor-pointer focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full h-11 rounded-md border border-border bg-muted/50 px-3 font-mono text-sm text-foreground appearance-none cursor-pointer focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 {[1, 2, 3, 4, 5].map((d) => (
                   <option key={d} value={d}>Depth {d}</option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-3.5 w-4 h-4 text-muted-foreground pointer-events-none" />
             </div>
           </div>
           <div className="space-y-2">
@@ -110,17 +120,17 @@ const CrawlerPage = () => {
               onChange={(e) => setMaxPages(Number(e.target.value))}
               min={1}
               max={100}
-              className="font-mono bg-muted/50 border-border focus:border-primary"
+              className="font-mono bg-muted/50 border-border focus:border-primary h-11"
               disabled={isRunning}
             />
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 pt-2">
           <Button
             onClick={handleStart}
             disabled={isRunning || !url.trim()}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono gap-2"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono gap-2 h-11 px-6"
           >
             <Play className="w-4 h-4" /> Start Crawl
           </Button>
@@ -128,7 +138,7 @@ const CrawlerPage = () => {
             <Button
               onClick={handleStop}
               variant="outline"
-              className="border-destructive text-destructive hover:bg-destructive/10 font-mono gap-2"
+              className="border-destructive text-destructive hover:bg-destructive/10 font-mono gap-2 h-11"
             >
               <Square className="w-4 h-4" /> Stop
             </Button>
@@ -136,7 +146,7 @@ const CrawlerPage = () => {
           <Button
             onClick={() => setTerminalOpen(!terminalOpen)}
             variant="outline"
-            className="font-mono gap-2 ml-auto border-border text-muted-foreground hover:text-foreground"
+            className="font-mono gap-2 ml-auto border-border text-muted-foreground hover:text-foreground h-11"
           >
             Terminal {logs.length > 0 && `(${logs.length})`}
           </Button>
@@ -167,30 +177,39 @@ const CrawlerPage = () => {
               { label: "Internal Links", value: result.internal_links.length, icon: Link2, color: "text-neon-cyan" },
               { label: "External Links", value: result.external_links.length, icon: ExternalLink, color: "text-neon-yellow" },
               { label: "Subdomains", value: result.subdomains.length, icon: Server, color: "text-neon-orange" },
-            ].map((item) => (
-              <div
+            ].map((item, i) => (
+              <motion.div
                 key={item.label}
-                className="rounded-lg border border-border bg-card p-4 space-y-2"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="rounded-xl border border-border bg-card/50 backdrop-blur-sm p-4 space-y-2 hover:border-primary/20 transition-all duration-300"
               >
                 <div className="flex items-center gap-2">
                   <item.icon className={`w-4 h-4 ${item.color}`} />
                   <span className="text-xs font-mono text-muted-foreground">{item.label}</span>
                 </div>
                 <p className={`text-2xl font-bold font-mono ${item.color}`}>{item.value}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* Crawled Pages with Attack Surface */}
           {result.crawled_pages && result.crawled_pages.length > 0 && (
-            <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="rounded-xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden">
               <div className="px-5 py-3 border-b border-border bg-muted/30 flex items-center gap-2">
                 <ShieldAlert className="w-4 h-4 text-neon-orange" />
                 <h3 className="font-mono text-sm text-foreground">Crawled Pages & Attack Surface</h3>
               </div>
               <div className="divide-y divide-border/50 max-h-96 overflow-y-auto">
                 {result.crawled_pages.map((page, i) => (
-                  <div key={i} className="p-4 hover:bg-muted/20 transition-colors space-y-2">
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="p-4 hover:bg-muted/20 transition-colors space-y-2"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="font-mono text-xs text-primary truncate max-w-[70%]">{page.url}</span>
                       <span className="text-xs font-mono text-muted-foreground">HTTP {page.status} · {page.links_found} links</span>
@@ -204,20 +223,20 @@ const CrawlerPage = () => {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
           )}
 
           {/* Internal Links */}
-          <div className="rounded-xl border border-border bg-card overflow-hidden">
+          <div className="rounded-xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden">
             <div className="px-5 py-3 border-b border-border bg-muted/30">
               <h3 className="font-mono text-sm text-foreground">Internal Links ({result.internal_links.length})</h3>
             </div>
             <div className="max-h-60 overflow-y-auto">
               {result.internal_links.map((link, i) => (
-                <div key={i} className="px-5 py-2 border-b border-border/50 font-mono text-xs text-muted-foreground hover:bg-muted/30 flex items-center gap-2">
+                <div key={i} className="px-5 py-2 border-b border-border/50 font-mono text-xs text-muted-foreground hover:bg-muted/30 flex items-center gap-2 transition-colors">
                   <span className="text-primary/60">{i + 1}.</span> {link}
                 </div>
               ))}
@@ -227,7 +246,7 @@ const CrawlerPage = () => {
           {/* Download */}
           <Button
             onClick={() => generateCrawlPDF(result)}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono gap-2"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 font-mono gap-2 h-11"
           >
             <Download className="w-4 h-4" /> Download PDF Report
           </Button>

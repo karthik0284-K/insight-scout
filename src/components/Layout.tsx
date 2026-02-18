@@ -1,14 +1,15 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, Globe, Bug, Terminal } from "lucide-react";
+import { Shield, Globe, Bug, Terminal, Home } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const navItems = [
-  { path: "/", label: "Crawler", icon: Globe },
+  { path: "/", label: "Home", icon: Home },
+  { path: "/crawler", label: "Crawler", icon: Globe },
   { path: "/vulnerability", label: "Scanner", icon: Bug },
 ];
 
@@ -50,7 +51,7 @@ const Layout = ({ children }: LayoutProps) => {
                     whileTap={{ scale: 0.98 }}
                   >
                     <item.icon className="w-4 h-4" />
-                    {item.label}
+                    <span className="hidden sm:inline">{item.label}</span>
                   </motion.div>
                 </Link>
               );
@@ -59,7 +60,7 @@ const Layout = ({ children }: LayoutProps) => {
 
           <div className="flex items-center gap-2">
             <Terminal className="w-4 h-4 text-primary animate-pulse-glow" />
-            <span className="text-xs font-mono text-muted-foreground">SYSTEM ONLINE</span>
+            <span className="text-xs font-mono text-muted-foreground hidden sm:inline">SYSTEM ONLINE</span>
           </div>
         </div>
       </header>
