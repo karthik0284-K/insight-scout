@@ -8,12 +8,47 @@ export interface Vulnerability {
   recommendation: string;
 }
 
+export interface ReconIntel {
+  ip_addresses?: string[];
+  geolocation?: {
+    country: string;
+    region: string;
+    city: string;
+    isp: string;
+    org: string;
+    as_number: string;
+    lat: number;
+    lon: number;
+  };
+  ssl_certificate?: {
+    issuer: string;
+    subject: string;
+    valid_from?: string;
+    valid_to?: string;
+    protocol?: string;
+    serial_number?: string;
+  };
+  technologies?: string[];
+  technical?: {
+    http_status: number;
+    content_type: string;
+    content_length: string;
+    response_time: string;
+    redirected: boolean;
+    final_url: string;
+    protocol: string;
+    internal_endpoints: number;
+    external_domains: number;
+  };
+}
+
 export interface ScanResult {
   target: string;
   scan_time: string;
   vulnerabilities_found: Vulnerability[];
   security_headers: Record<string, string>;
   risk_score: string;
+  recon_intel?: ReconIntel;
 }
 
 type LogCallback = (log: Omit<LogEntry, "id">) => void;
@@ -78,6 +113,7 @@ export const runScan = async (
       vulnerabilities_found: data.vulnerabilities_found,
       security_headers: data.security_headers,
       risk_score: data.risk_score,
+      recon_intel: data.recon_intel,
     };
   } catch (err) {
     if (abortSignal.aborted) {
