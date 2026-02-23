@@ -83,7 +83,9 @@ export const runScan = async (
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({ error: "Unknown error" }));
-      throw new Error(err.error || `Server returned ${response.status}`);
+      const errorMsg = err.error || `Server returned ${response.status}`;
+      onLog({ timestamp: timestamp(), message: `Scan error: ${errorMsg}`, type: "error" });
+      throw new Error(errorMsg);
     }
 
     const data = await response.json();
