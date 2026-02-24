@@ -7,6 +7,7 @@ import Layout from "@/components/Layout";
 import HomePage from "@/pages/HomePage";
 import CrawlerPage from "@/pages/CrawlerPage";
 import VulnerabilityPage from "@/pages/VulnerabilityPage";
+import ShodanPage from "@/pages/ShodanPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
             <Route path="/" element={<HomePage />} />
             <Route path="/crawler" element={<CrawlerPage />} />
             <Route path="/vulnerability" element={<VulnerabilityPage />} />
+            <Route path="/netrecon" element={<ShodanPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

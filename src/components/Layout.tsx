@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Shield, Globe, Bug, Terminal, Home } from "lucide-react";
+import { Shield, Globe, Bug, Terminal, Home, Radar } from "lucide-react";
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,6 +11,7 @@ const navItems = [
   { path: "/", label: "Home", icon: Home },
   { path: "/crawler", label: "Crawler", icon: Globe },
   { path: "/vulnerability", label: "Scanner", icon: Bug },
+  { path: "/netrecon", label: "NetRecon", icon: Radar },
 ];
 
 const Layout = ({ children }: LayoutProps) => {

@@ -14,7 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      scanned_hosts: {
+        Row: {
+          asn: string | null
+          banner: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          fts: unknown
+          id: string
+          ip: string
+          latitude: number | null
+          longitude: number | null
+          organization: string | null
+          port: number
+          protocol: string
+          risk_score: number
+          scan_session_id: string | null
+          service: string | null
+        }
+        Insert: {
+          asn?: string | null
+          banner?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          fts?: unknown
+          id?: string
+          ip: string
+          latitude?: number | null
+          longitude?: number | null
+          organization?: string | null
+          port: number
+          protocol?: string
+          risk_score?: number
+          scan_session_id?: string | null
+          service?: string | null
+        }
+        Update: {
+          asn?: string | null
+          banner?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          fts?: unknown
+          id?: string
+          ip?: string
+          latitude?: number | null
+          longitude?: number | null
+          organization?: string | null
+          port?: number
+          protocol?: string
+          risk_score?: number
+          scan_session_id?: string | null
+          service?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
